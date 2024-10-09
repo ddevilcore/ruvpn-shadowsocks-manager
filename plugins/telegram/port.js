@@ -19,16 +19,7 @@ const checkSub = (message) => {
         if (isAvailable) {
           logger.info(`Available port ${port.port} to date ${new Date(new Date(port.availableToDate) - new Date().now()).toDateString()}`);
         } else {
-          manager.send({
-            command: 'del',
-            port,
-          }, managerAddress.get())
-            .then((succ) => {
-              logger.info(succ);
-            })
-            .catch((err) => {
-              logger.error(err);
-            });
+          del(message, port);
         }
       })
     }
@@ -61,6 +52,7 @@ const list = (message) => {
 };
 
 const add = (message, port, password, availableToDate) => {
+  logger.info(`Start adding new port ${port} with ${password} and available to date ${availableToDate}`);
   manager.send({
     command: 'add',
     port,
@@ -92,7 +84,7 @@ const pwd = (message, port, password) => {
 
 telegram.on('manager', message => {
 
-  const addReg = new RegExp(/^add (\d{0,5}) ([\w]{0,}) (\d{1,2}\-\d{1,2}\-\d{2,4})$/);
+  const addReg = new RegExp(/^add (\d{0,5}) ([\w]{0,}) (\d{2,4}\-\d{1,2}\-\d{1,2})$/);
   const delReg = new RegExp(/^del (\d{0,5})$/);
   const pwdReg = new RegExp(/^pwd (\d{0,5}) ([\w]{0,})$/);
 

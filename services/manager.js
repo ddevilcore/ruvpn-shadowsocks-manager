@@ -42,6 +42,8 @@ const checkData = async (receive) => {
     return;
   }
   length = buffer[0] * 256 * 256 * 256 + buffer[1] * 256 * 256 + buffer[2] * 256 + buffer[3];
+  logger.info(`Checkdata[length] ${length}`);
+  logger.info(`Condition[buffer] ${buffer.length >= length + 4}`);
   if (buffer.length >= length + 4) {
     data = buffer.slice(4, length + 4);
     const message = JSON.parse(data.toString());
@@ -71,6 +73,7 @@ const sendMessage = (data, options) => {
       socket: client,
     };
     client.on('data', data => {
+      logger.info(`Client has returned data ${data}`);
       receiveData(receive, data).then(message => {
         if(!message) {
           // reject(new Error(`empty message from ssmgr[s] [${ options.host || host }:${ options.port || port }]`));
