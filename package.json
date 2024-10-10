@@ -11,7 +11,7 @@
     "check": "eslint .",
     "fix": "eslint . --fix"
   },
-  "author": "Gu Yuteng <igyteng@gmail.com>",
+  "author": "Art Musin <amnmbrone@yahoo.com>",
   "license": "GPL-3.0",
   "keywords": [
     "ssmgr",
@@ -52,7 +52,7 @@
     "inquirer": "^6.5.2",
     "ioredis": "^4.27.2",
     "js-yaml": "^3.14.1",
-    "knex": "0.20.9",
+    "knex": "0.21.21",
     "later": "^1.2.0",
     "lodash": "^4.17.21",
     "log4js": "^4.5.1",
@@ -73,12 +73,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shadowsocks/shadowsocks-manager.git"
+    "url": "git+https://github.com/ddevilcore/ruvpn-shadowsocks-manager.git"
   },
   "bugs": {
     "url": "https://github.com/shadowsocks/shadowsocks-manager/issues"
   },
-  "homepage": "https://github.com/shadowsocks/shadowsocks-manager#readme",
+  "homepage": "https://github.com/ddevilcore/ruvpn-shadowsocks-manager.git#readme",
   "bin": {
     "ssmgr": "./bin/ssmgr"
   }
