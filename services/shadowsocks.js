@@ -303,7 +303,7 @@ const checkSubscription = async () => {
   try {
     const accounts = await knex('account').select([ 'port', 'password', 'availableToDate' ]);
     accounts.forEach(async (acc) => {
-      const isAvailable = new Date.now() < new new Date(acc.availableToDate);
+      const isAvailable = new Date(Date.now()) < new Date(acc.availableToDate).toLocaleDateString();
       if (!isAvailable) {
         await sendMessage(`remove: {"server_port": ${ acc.port }}`);
       }

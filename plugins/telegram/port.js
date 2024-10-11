@@ -15,7 +15,7 @@ const checkSub = (message) => {
       return;
     } else {
       avports.forEach((port) => {
-        const isAvailable = new Date.now() < new new Date(port.availableToDate);
+        const isAvailable = new Date(Date.now()).toLocaleDateString() < new Date(port.availableToDate).toLocaleDateString();
         if (isAvailable) {
           logger.info(`Available port ${port.port} to date ${new Date(new Date(port.availableToDate) - new Date().now()).toDateString()}`);
         } else {
@@ -57,7 +57,7 @@ const add = (message, port, password, availableToDate) => {
     command: 'add',
     port,
     password,
-    availableToDate: Date.parse(availableToDate),
+    availableToDate,
   }, managerAddress.get()).then(success => {
     telegram.emit('send', message, `Add port ${success.port} success.`);
   });
