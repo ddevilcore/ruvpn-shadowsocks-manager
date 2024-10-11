@@ -8,8 +8,9 @@ const logger = log4js.getLogger('telegram');
 
 const checkSub = (message) => {
   manager.send({
-    command: 'checkSub',
+    command: 'list',
   }, managerAddress.get()).then((avports) => {
+    logger.info(`[checkSub]list ports ${avports}`);
     if(avports.length === 0) {
       str = 'No available ports.';
       return;
