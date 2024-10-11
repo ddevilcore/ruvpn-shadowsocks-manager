@@ -75,6 +75,7 @@ const sendMessage = (data, options) => {
     client.on('data', data => {
       logger.info(`Client has returned data ${data}`);
       receiveData(receive, data).then(message => {
+        logger.info(`receiveData has returned message ${message}`);
         if(!message) {
           // reject(new Error(`empty message from ssmgr[s] [${ options.host || host }:${ options.port || port }]`));
         } else if(message.code === 0) {
