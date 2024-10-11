@@ -37,7 +37,7 @@ const receiveCommand = async (data, code) => {
       time,
     });
     const message = JSON.parse(data.slice(6).toString());
-    logger.info(message);
+    logger.info(`[receiveCommand] message ${message}`);
     if(message.command === 'add') {
       const port = +message.port;
       const password = message.password;

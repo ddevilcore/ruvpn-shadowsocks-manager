@@ -9,6 +9,7 @@ const createTable = async() => {
   return knex.schema.createTable(tableName, function(table) {
     table.integer('port').primary();
     table.string('password');
+    table.string('availableToDate');
   });
 };
 
