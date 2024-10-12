@@ -301,10 +301,11 @@ const checkSubscription = async () => {
   try {
     const accounts = await knex('account').select([ 'port', 'password', 'availableToDate' ]);
     accounts.forEach(async (acc) => {
-      const isAvailable = new Date(Date.now()).toLocaleDateString() < new Date(port.availableToDate).toLocaleDateString();
-      logger.info(`Check port ${port.port} to date ${port.availableToDate}, availability is ${isAvailable}`);
+      const isAvailable = new Date(Date.now()).toLocaleDateString() < new Date(acc.availableToDate).toLocaleDateString();
+      logger.info(`Check port ${acc.port} to date ${acc.availableToDate}, availability is ${isAvailable}`);
       if (!isAvailable) {
         await sendMessage(`remove: {"server_port": ${ acc.port }}`);
+        await knex('account').where({ port: acc.port }).delete();
       }
     })
   } catch(err) {
