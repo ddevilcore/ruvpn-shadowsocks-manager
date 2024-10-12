@@ -215,11 +215,9 @@ later.setInterval(() => {
   sendPing();
   getGfwStatus();
 }, later.parse.text('every 1 mins'));
-// cron.minute(() => {
-//   resend();
-//   sendPing();
-//   getGfwStatus();
-// }, 1);
+cron.minute(() => {
+  checkSubscription();
+}, 1);
 
 const checkPortRange = (port) => {
   if(!config.shadowsocks.portRange) { return true; }
@@ -303,7 +301,8 @@ const checkSubscription = async () => {
   try {
     const accounts = await knex('account').select([ 'port', 'password', 'availableToDate' ]);
     accounts.forEach(async (acc) => {
-      const isAvailable = new Date(Date.now()) < new Date(acc.availableToDate).toLocaleDateString();
+      const isAvailable = new Date(Date.now()).toLocaleDateString() < new Date(port.availableToDate).toLocaleDateString();
+      logger.info(`Check port ${port.port} to date ${port.availableToDate}, availability is ${isAvailable}`);
       if (!isAvailable) {
         await sendMessage(`remove: {"server_port": ${ acc.port }}`);
       }

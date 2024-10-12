@@ -22,9 +22,7 @@ const checkSub = (message) => {
           del(message, port);
         }
       })
-    }
-    if (message) {
-      const str = `${managerAddress.get().host}:${managerAddress.get().port}\n\n + ${avports.join('\n')}`;
+      str = `${managerAddress.get().host}:${managerAddress.get().port}\n\n + ${avports.join('\n')}`;
       telegram.emit('send', message, str);
     }
   }).catch((err) => {
@@ -42,7 +40,7 @@ const list = (message) => {
     } else {
       str += `${managerAddress.get().host}:${managerAddress.get().port}\n\n`;
       ports.forEach(port => {
-        str += port.port + ', ' + port.password + '\n';
+        str += port.port + ', ' + port.password + ', ' + port.availableToDate + '\n';
       });
     }
     telegram.emit('send', message, str);
@@ -109,7 +107,3 @@ telegram.on('manager', message => {
     checkSub(message);
   }
 });
-
-cron.minute(() => {
-  checkSub()
-}, 'CheckSubscription', 1);
