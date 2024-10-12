@@ -2,7 +2,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('system');
 const later = require('later');
 later.date.localTime();
-// const cron = appRequire('init/cron');
+const cron = appRequire('init/cron');
 const dgram = require('dgram');
 const client = dgram.createSocket('udp4');
 const version = appRequire('package').version;
