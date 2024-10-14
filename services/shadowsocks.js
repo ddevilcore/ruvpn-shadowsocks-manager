@@ -242,11 +242,11 @@ const addAccount = async (port, password, availableToDate, username, subscriptio
     await sendMessage(`add: {"server_port": ${ port }, "password": "${ password }"}`);
     await knex('account').insert({
       port,
+      username,
       password,
       availableToDate,
-      username,
+      isActive,
       subscriptionType,
-      isActive
     });
     return { port, password, availableToDate, username, subscriptionType, isActive };
   } catch(err) {
