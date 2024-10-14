@@ -10,17 +10,17 @@ const createTable = async() => {
     table.integer('port').primary();
     table
       .string('username')
-      .notNullable()
+      // .notNullable()
       .defaultTo('');
     table.string('password');
     table.string('availableToDate');
     table
       .boolean('isActive')
-      .notNullable()
+      // .notNullable()
       .defaultTo(false);
     table
       .string('subscriptionType')
-      .notNullable()
+      // .notNullable()
       .defaultTo('');
   });
 };
