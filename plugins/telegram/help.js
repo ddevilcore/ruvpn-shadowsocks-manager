@@ -8,9 +8,8 @@ telegram.on('message', message => {
   auth
 
   list
-  checkSub
   del {port}
-  add {port} {password} {date (format: YYYY-MM-DD)}
+  add {port} {password} {date (format: YYYY-MM-DD)} {isActive (0, 1)} {subscriptionType (FREE, COSMIC, HALF, MONTH, YEAR)}
   pwd {port} {password}
 
   listserver

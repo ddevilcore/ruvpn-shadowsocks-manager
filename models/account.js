@@ -8,9 +8,20 @@ const createTable = async() => {
   }
   return knex.schema.createTable(tableName, function(table) {
     table.integer('port').primary();
+    table
+      .string('username')
+      .notNullable()
+      .defaultTo('');
     table.string('password');
     table.string('availableToDate');
-    table.boolean('isActive');
+    table
+      .boolean('isActive')
+      .notNullable()
+      .defaultTo(0);
+    table
+      .string('subscriptionType')
+      .notNullable()
+      .defaultTo('');
   });
 };
 
