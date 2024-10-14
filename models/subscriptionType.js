@@ -1,4 +1,4 @@
-export const subscriptionType = {
+module.exports = {
   'FREE': 'FREE',
   'COSMIC': 'COSMIC',
   'MONTH': 'MONTH',
