@@ -4,7 +4,7 @@ const managerAddress = appRequire('plugins/telegram/managerAddress');
 const cron = appRequire('init/cron');
 
 const log4js = require('log4js');
-const { subscriptionType } = require('../../models/subscriptionType');
+// const { subscriptionType } = require('../../models/subscriptionType');
 const logger = log4js.getLogger('telegram');
 
 const checkSub = (message) => {
