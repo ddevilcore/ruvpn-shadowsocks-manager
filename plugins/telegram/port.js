@@ -55,7 +55,7 @@ const add = (message, port, password, availableToDate, isActive, subscriptionTyp
   manager.send({
     command: 'add',
     port,
-    username: message.message.from_id,
+    username: message.message.from.id,
     password,
     availableToDate,
     isActive,
