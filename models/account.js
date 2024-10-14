@@ -10,6 +10,7 @@ const createTable = async() => {
     table.integer('port').primary();
     table.string('password');
     table.string('availableToDate');
+    table.boolean('isActive');
   });
 };
 

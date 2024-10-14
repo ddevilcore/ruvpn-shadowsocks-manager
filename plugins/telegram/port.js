@@ -56,6 +56,7 @@ const add = (message, port, password, availableToDate) => {
     port,
     password,
     availableToDate,
+    isActive: true,
   }, managerAddress.get()).then(success => {
     telegram.emit('send', message, `Add port ${success.port} success.`);
   });

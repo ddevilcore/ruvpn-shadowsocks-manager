@@ -214,10 +214,8 @@ later.setInterval(() => {
   resend();
   sendPing();
   getGfwStatus();
-}, later.parse.text('every 1 mins'));
-cron.minute(() => {
   checkSubscription();
-}, 1);
+}, later.parse.text('every 1 mins'));
 
 const checkPortRange = (port) => {
   if(!config.shadowsocks.portRange) { return true; }
@@ -283,11 +281,13 @@ const changePassword = async (port, password) => {
   }
 };
 
-const changeAvailability = async (port, availableToDate) => {
+const changeAvailability = async (port, availableToDate, isActive) => {
   try {
     const updateAccount = await knex('account').where({ port }).update({
       availableToDate,
+      isActive,
     });
+    await sendMessage(`add: {"server_port": ${ acc.port }, "password": "${ updateAccount.password }"}`);
     if(updateAccount <= 0) {
       return Promise.reject('error');
     }
@@ -299,13 +299,23 @@ const changeAvailability = async (port, availableToDate) => {
 
 const checkSubscription = async () => {
   try {
-    const accounts = await knex('account').select([ 'port', 'password', 'availableToDate' ]);
+    const accounts = await knex('account').select([ 'port', 'password', 'availableToDate', 'isActive' ]);
     accounts.forEach(async (acc) => {
       const isAvailable = new Date(Date.now()).toLocaleDateString() < new Date(acc.availableToDate).toLocaleDateString();
-      logger.info(`Check port ${acc.port} to date ${acc.availableToDate}, availability is ${isAvailable}`);
-      if (!isAvailable) {
+      logger.info(`Checking port ${acc.port} to date ${acc.availableToDate}, availability is ${isAvailable}`);
+      if (!isAvailable && !acc.isActive) {
         await sendMessage(`remove: {"server_port": ${ acc.port }}`);
-        await knex('account').where({ port: acc.port }).delete();
+      }
+      if (acc.isActive && !isAvailable) {
+        await knex('account').where({ port: acc.port }).update({ isActive: false });
+      }
+      if (isAvailable && !acc.isActive) {
+        await sendMessage(`add: {"server_port": ${ acc.port }, "password": "${ updateAccount.password }"}`);
+        await knex('account').where({ port: acc.port }).update({ isActive: true });
+      }
+      if (acc.isActive && isAvailable) {
+        await sendMessage(`add: {"server_port": ${ acc.port }, "password": "${ updateAccount.password }"}`);
+        await knex('account').where({ port: acc.port }).update({ isActive: true });
       }
     })
   } catch(err) {
