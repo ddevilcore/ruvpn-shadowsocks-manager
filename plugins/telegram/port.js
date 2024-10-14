@@ -97,7 +97,7 @@ telegram.on('manager', message => {
     const port = +reg[1];
     const password = reg[2];
     const availableToDate = reg[3];
-    const isActive = +reg[4];
+    const isActive = Boolean(+reg[4]);
     const subscriptionType = reg[5];
     add(message, port, password, availableToDate, isActive, subscriptionType);
   } else if(message.message.text.match(delReg)) {

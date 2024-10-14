@@ -234,14 +234,21 @@ const checkPortRange = (port) => {
   return isInRange;
 };
 
-const addAccount = async (port, password, availableToDate) => {
+const addAccount = async (port, password, availableToDate, username, subscriptionType, isActive) => {
   try {
     if(!checkPortRange(port)) {
       return Promise.reject('error');
     }
     await sendMessage(`add: {"server_port": ${ port }, "password": "${ password }"}`);
-    await knex('account').insert({ port, password, availableToDate });
-    return { port, password, availableToDate };
+    await knex('account').insert({
+      port,
+      password,
+      availableToDate,
+      username,
+      subscriptionType,
+      isActive
+    });
+    return { port, password, availableToDate, username, subscriptionType, isActive };
   } catch(err) {
     return Promise.reject('error');
   }
