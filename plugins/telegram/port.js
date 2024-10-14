@@ -49,14 +49,14 @@ const list = (message) => {
   });
 };
 
-const add = (message, port, password, availableToDate) => {
+const add = (message, port, password, availableToDate, isActive) => {
   logger.info(`Start adding new port ${port} with ${password} and available to date ${availableToDate}`);
   manager.send({
     command: 'add',
     port,
     password,
     availableToDate,
-    isActive: true,
+    isActive,
   }, managerAddress.get()).then(success => {
     telegram.emit('send', message, `Add port ${success.port} success.`);
   });
@@ -83,7 +83,7 @@ const pwd = (message, port, password) => {
 
 telegram.on('manager', message => {
 
-  const addReg = new RegExp(/^add (\d{0,5}) ([\w]{0,}) (\d{2,4}\-\d{1,2}\-\d{1,2})$/);
+  const addReg = new RegExp(/^add (\d{0,5}) ([\w]{0,}) (\d{2,4}\-\d{1,2}\-\d{1,2}) ([0,1])$/);
   const delReg = new RegExp(/^del (\d{0,5})$/);
   const pwdReg = new RegExp(/^pwd (\d{0,5}) ([\w]{0,})$/);
 
@@ -94,7 +94,8 @@ telegram.on('manager', message => {
     const port = +reg[1];
     const password = reg[2];
     const availableToDate = reg[3];
-    add(message, port, password, availableToDate);
+    const isActive = +reg[4];
+    add(message, port, password, availableToDate, isActive);
   } else if(message.message.text.match(delReg)) {
     const reg = message.message.text.match(delReg);
     const port = +reg[1];
