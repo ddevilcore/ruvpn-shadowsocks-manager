@@ -1,4 +1,4 @@
-module.exports = {
+exports = {
   'FREE': 'FREE',
   'COSMIC': 'COSMIC',
   'MONTH': 'MONTH',
