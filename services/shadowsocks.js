@@ -302,7 +302,7 @@ const checkSubscription = async () => {
     const accounts = await knex('account').select([ 'port', 'password', 'availableToDate', 'isActive' ]);
     accounts.forEach(async (acc) => {
       const isAvailable = new Date(Date.now()).toLocaleDateString() < new Date(acc.availableToDate).toLocaleDateString();
-      logger.info(`Checking port ${acc.port} to date ${acc.availableToDate}, availability is ${isAvailable}`);
+      logger.info(`Checking port ${acc.port} to date ${acc.availableToDate}, availability is ${isAvailable} and his ${acc.isActive}`);
       if (!isAvailable && !acc.isActive) {
         await sendMessage(`remove: {"server_port": ${ acc.port }}`);
         await knex('account').where({ port: acc.port }).update({ isActive: false });
@@ -312,11 +312,11 @@ const checkSubscription = async () => {
         await sendMessage(`remove: {"server_port": ${ acc.port }}`);
       }
       if (isAvailable && !acc.isActive) {
-        await sendMessage(`add: {"server_port": ${ acc.port }, "password": "${ updateAccount.password }"}`);
+        await sendMessage(`add: {"server_port": ${ acc.port }, "password": "${ acc.password }"}`);
         await knex('account').where({ port: acc.port }).update({ isActive: true });
       }
       if (acc.isActive && isAvailable) {
-        await sendMessage(`add: {"server_port": ${ acc.port }, "password": "${ updateAccount.password }"}`);
+        await sendMessage(`add: {"server_port": ${ acc.port }, "password": "${ acc.password }"}`);
         await knex('account').where({ port: acc.port }).update({ isActive: true });
       }
     })
