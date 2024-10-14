@@ -17,7 +17,7 @@ const createTable = async() => {
     table
       .boolean('isActive')
       .notNullable()
-      .defaultTo(0);
+      .defaultTo(false);
     table
       .string('subscriptionType')
       .notNullable()
