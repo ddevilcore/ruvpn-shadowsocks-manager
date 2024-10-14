@@ -12,7 +12,7 @@ const createTable = async() => {
     table.string('password');
     table.string('availableToDate');
     table.boolean('isActive');
-    table.string('subscriptionType').defaultTo('');
+    table.string('subscriptionType');
   });
 };
 
