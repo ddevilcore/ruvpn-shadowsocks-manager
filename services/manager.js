@@ -75,6 +75,7 @@ const sendMessage = (data, options) => {
     client.on('data', data => {
       logger.info(`Client has returned data ${data}`);
       receiveData(receive, data).then(message => {
+        logger.info(`[receiveData] has returned message ${message?.data?.toString()}`);
         if(!message) {
           // reject(new Error(`empty message from ssmgr[s] [${ options.host || host }:${ options.port || port }]`));
         } else if(message.code === 0) {
@@ -192,11 +193,12 @@ const send = async (data, options) => {
       let successMark = false;
       const ports = {};
       results.forEach(result => {
+        logger.info(`[list]results ports ${results}, ${result}`);
         if(result) {
           successMark = true;
           result.forEach(f => {
             if(!ports[f.port]) {
-              ports[f.port] = { password: f.password, number: 1 };
+              ports[f.port] = { password: f.password, availableToDate: f.availableToDate, number: 1 };
             } else {
               ports[f.port].number += 1;
             }
@@ -209,28 +211,31 @@ const send = async (data, options) => {
         return { port: +m, password: ports[m].password };
       });
       return successMark ? ret : Promise.reject();
-    } else if (data.command === 'checkSub') {
-      let successMark = false;
-      const availablePorts = {};
-      results.forEach((res) => {
-        if (res) {
-          successMark = true;
-          res.forEach((f) => {
-            if (!availablePorts[f.port]) {
-              availablePorts[f.port] = { availableToDate: f.availableToDate, number: 1 };
-            } else {
-              availablePorts[f.port].number += 1;
-            }
-          })
-        }
-        const ret = Object.keys(availablePorts).filter(f => {
-          return availablePorts[f].number >= results.filter(f => f).length;
-        }).map(m => {
-          return { port: +m, availableToDate: availablePorts[m].availableToDate };
-        });
-        return successMark ? ret : Promise.reject();
-      })
-    } else {
+    }
+    // else if (data.command === 'checkSub') {
+    //   let successMark = false;
+    //   const availablePorts = {};
+    //   results.forEach((res) => {
+    //     logger.info(`[checkSub]results ${results}, ${res}`);
+    //     if (res) {
+    //       successMark = true;
+    //       res.forEach((f) => {
+    //         if (!availablePorts[f.port]) {
+    //           availablePorts[f.port] = { availableToDate: f.availableToDate, number: 1 };
+    //         } else {
+    //           availablePorts[f.port].number += 1;
+    //         }
+    //       })
+    //     }
+    //     const ret = Object.keys(availablePorts).filter(f => {
+    //       return availablePorts[f].number >= results.filter(f => f).length;
+    //     }).map(m => {
+    //       return { port: +m, availableToDate: availablePorts[m].availableToDate };
+    //     });
+    //     return successMark ? ret : Promise.reject();
+    //   })
+    // }
+    else {
       const random = (+Math.random().toString().substr(2, 8)) % results.length;
       return results[random];
     }

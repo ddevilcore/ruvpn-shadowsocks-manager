@@ -4,4 +4,4 @@ WORKDIR ./ruvnp
 COPY ./ruvnp ./
 RUN npm install
 EXPOSE 8080
-CMD ["node", "server.js"]
+CMD ["node", "server.js", "--debug"]

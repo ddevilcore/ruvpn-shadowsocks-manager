@@ -2,7 +2,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('system');
 const later = require('later');
 later.date.localTime();
-// const cron = appRequire('init/cron');
+const cron = appRequire('init/cron');
 const dgram = require('dgram');
 const client = dgram.createSocket('udp4');
 const version = appRequire('package').version;
@@ -215,11 +215,7 @@ later.setInterval(() => {
   sendPing();
   getGfwStatus();
 }, later.parse.text('every 1 mins'));
-// cron.minute(() => {
-//   resend();
-//   sendPing();
-//   getGfwStatus();
-// }, 1);
+cron.minute(() => checkSubscription(), 'CheckSubscriptions', 1);
 
 const checkPortRange = (port) => {
   if(!config.shadowsocks.portRange) { return true; }
@@ -238,14 +234,21 @@ const checkPortRange = (port) => {
   return isInRange;
 };
 
-const addAccount = async (port, password, availableToDate) => {
+const addAccount = async (port, password, availableToDate, username, subscriptionType, isActive) => {
   try {
     if(!checkPortRange(port)) {
       return Promise.reject('error');
     }
     await sendMessage(`add: {"server_port": ${ port }, "password": "${ password }"}`);
-    await knex('account').insert({ port, password, availableToDate });
-    return { port, password, availableToDate };
+    await knex('account').insert({
+      port,
+      username,
+      password,
+      availableToDate,
+      isActive,
+      subscriptionType,
+    });
+    return { port, password, availableToDate, username, subscriptionType, isActive };
   } catch(err) {
     return Promise.reject('error');
   }
@@ -285,11 +288,13 @@ const changePassword = async (port, password) => {
   }
 };
 
-const changeAvailability = async (port, availableToDate) => {
+const changeAvailability = async (port, availableToDate, isActive) => {
   try {
     const updateAccount = await knex('account').where({ port }).update({
       availableToDate,
+      isActive,
     });
+    await sendMessage(`add: {"server_port": ${acc.port}, "password": "${updateAccount.password}"}`);
     if(updateAccount <= 0) {
       return Promise.reject('error');
     }
@@ -301,12 +306,20 @@ const changeAvailability = async (port, availableToDate) => {
 
 const checkSubscription = async () => {
   try {
-    const accounts = await knex('account').select([ 'port', 'password', 'availableToDate' ]);
+    const accounts = await knex('account').select([ 'port', 'password', 'availableToDate', 'isActive' ]);
     accounts.forEach(async (acc) => {
-      const isAvailable = new Date.now() < new new Date(acc.availableToDate);
-      if (!isAvailable) {
-        await sendMessage(`remove: {"server_port": ${ acc.port }}`);
+      const isAvailable = new Date(Date.now()).toLocaleDateString() < new Date(acc.availableToDate).toLocaleDateString();
+      logger.info(
+        `Checking port ${acc.port} to date ${acc.availableToDate}, availability is ${isAvailable} and his active status is ${acc.isActive}`
+      );
+      if (!isAvailable || !acc.isActive) {
+        await sendMessage(`remove: {"server_port": ${acc.port}}`);
       }
+      // if (acc.isActive) {
+      //   await sendMessage(`remove: {"server_port": ${acc.port}}`);
+      //   await sendMessage(`add: {"server_port": ${acc.port}, "password": "${acc.password}"}`);
+      // }
+      // await knex('account').where({ port: acc.port }).update({ isActive: isAvailable });
     })
   } catch(err) {
     return Promise.reject('error');
@@ -315,7 +328,7 @@ const checkSubscription = async () => {
 
 const listAccount = async () => {
   try {
-    const accounts = await knex('account').select([ 'port', 'password', 'availableToDate' ]);
+    const accounts = await knex('account').select([ 'port', 'password', 'availableToDate', 'isActive' ]);
     return accounts;
   } catch(err) {
     return Promise.reject('error');

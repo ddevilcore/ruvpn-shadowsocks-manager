@@ -37,12 +37,15 @@ const receiveCommand = async (data, code) => {
       time,
     });
     const message = JSON.parse(data.slice(6).toString());
-    logger.info(message);
+    logger.info(`[receiveCommand] message ${message}`);
     if(message.command === 'add') {
       const port = +message.port;
       const password = message.password;
       const availableToDate = message.availableToDate;
-      return shadowsocks.addAccount(port, password, availableToDate);
+      const username = message.username;
+      const isActive = Boolean(+message.isActive);
+      const subscriptionType = message.subscriptionType;
+      return shadowsocks.addAccount(port, password, availableToDate, username, subscriptionType, isActive);
     } else if (message.command === 'del') {
       const port = +message.port;
       return shadowsocks.removeAccount(port);
