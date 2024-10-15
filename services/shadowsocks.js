@@ -312,13 +312,13 @@ const checkSubscription = async () => {
       logger.info(
         `Checking port ${acc.port} to date ${acc.availableToDate}, availability is ${isAvailable} and his active status is ${acc.isActive}`
       );
-      if (!isAvailable) {
+      if (!isAvailable || !isActive) {
         await sendMessage(`remove: {"server_port": ${acc.port}}`);
       }
-      if (acc.isActive) {
-        await sendMessage(`remove: {"server_port": ${acc.port}}`);
-        await sendMessage(`add: {"server_port": ${acc.port}, "password": "${acc.password}"}`);
-      }
+      // if (acc.isActive) {
+      //   await sendMessage(`remove: {"server_port": ${acc.port}}`);
+      //   await sendMessage(`add: {"server_port": ${acc.port}, "password": "${acc.password}"}`);
+      // }
       // await knex('account').where({ port: acc.port }).update({ isActive: isAvailable });
     })
   } catch(err) {
