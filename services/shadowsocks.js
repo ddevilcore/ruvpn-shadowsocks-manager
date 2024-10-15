@@ -312,7 +312,7 @@ const checkSubscription = async () => {
       logger.info(
         `Checking port ${acc.port} to date ${acc.availableToDate}, availability is ${isAvailable} and his active status is ${acc.isActive}`
       );
-      if (!isAvailable || !isActive) {
+      if (!isAvailable || !acc.isActive) {
         await sendMessage(`remove: {"server_port": ${acc.port}}`);
       }
       // if (acc.isActive) {
