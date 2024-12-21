@@ -308,7 +308,7 @@ const checkSubscription = async () => {
   try {
     const accounts = await knex('account').select([ 'port', 'password', 'availableToDate', 'isActive' ]);
     accounts.forEach(async (acc) => {
-      const isAvailable = new Date(Date.now()).toLocaleDateString() < new Date(acc.availableToDate).toLocaleDateString();
+      const isAvailable = new Date(Date.now()) < new Date(acc.availableToDate);
       logger.info(
         `Checking port ${acc.port} to date ${acc.availableToDate}, availability is ${isAvailable} and his active status is ${acc.isActive}`
       );
