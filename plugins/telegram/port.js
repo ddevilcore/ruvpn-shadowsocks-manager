@@ -17,7 +17,7 @@ const checkSub = (message) => {
       return;
     } else {
       avports.forEach((port) => {
-        const isAvailable = new Date(Date.now()).toLocaleDateString() < new Date(port.availableToDate).toLocaleDateString();
+        const isAvailable = Date.now() < new Date(port.availableToDate);
         logger.info(`Check port ${port.port} to date ${port.availableToDate}, availability is ${isAvailable}`);
         if (!isAvailable) {
           del(message, port);
